@@ -115,7 +115,7 @@ class _RSVPPageState extends State<RSVPPage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/bg2.png'),
+            image: AssetImage('assets/images/bg2.png'),
             fit: BoxFit.fill,
             colorFilter: ColorFilter.mode(
               Color(0xFF2C3E50).withOpacity(0.2),
