@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 
@@ -55,8 +55,18 @@ class _RSVPPageState extends State<RSVPPage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_rsvpStatus == 'Accept' && !_chickenSelected && !_steakSelected) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select at least one food option')),
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Missing Selection'),
+            content: const Text('Please select at least one food option'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
         return;
       }
@@ -78,8 +88,18 @@ class _RSVPPageState extends State<RSVPPage> {
 
         if (response.statusCode == 200) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Thank you for your RSVP!')),
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('RSVP Submitted'),
+                content: const Text('Thank you for your RSVP!'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
             );
           }
 
@@ -95,8 +115,18 @@ class _RSVPPageState extends State<RSVPPage> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error submitting RSVP: $e')),
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Submission Error'),
+              content: Text('Error submitting RSVP: $e'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           );
         }
       } finally {
@@ -216,6 +246,7 @@ class _RSVPPageState extends State<RSVPPage> {
                             onChanged: _isSubmitting ? null : (bool? value) {
                               setState(() {
                                 _chickenSelected = value ?? false;
+                                if (_chickenSelected) _steakSelected = false;
                               });
                             },
                           ),
@@ -226,12 +257,11 @@ class _RSVPPageState extends State<RSVPPage> {
                             onChanged: _isSubmitting ? null : (bool? value) {
                               setState(() {
                                 _steakSelected = value ?? false;
+                                if (_steakSelected) _chickenSelected = false;
                               });
                             },
                           ),
-                          const Text(
-                            'Beef',
-                          ),
+                          const Text('Beef'),
                         ],
                       ),
                     ),
