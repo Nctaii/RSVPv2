@@ -182,12 +182,12 @@ class _RSVPPageState extends State<RSVPPage> {
                     child: TextFormField(
                       controller: _nameController,
                       decoration: const InputDecoration(
-                        labelText: 'Your Name',
+                        labelText: 'Full Name',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
+                          return 'Please enter your full name';
                         }
                         return null;
                       },
