@@ -39,8 +39,10 @@ class RSVPPage extends StatefulWidget {
 class _RSVPPageState extends State<RSVPPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _kidsController = TextEditingController();
   bool _chickenSelected = false;
   bool _steakSelected = false;
+  bool _hasKids = false;
   bool _isSubmitting = false;
   String _rsvpStatus = 'Accept'; // Default value
 
@@ -77,12 +79,14 @@ class _RSVPPageState extends State<RSVPPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('https://script.google.com/macros/s/AKfycbw6oGAqAYsdhDFDldlHV6M-ubxIDq3kLhulDcG5kgiokMlFf0UZjO9fSLrEGO1goz1x/exec'),
+          Uri.parse('https://script.google.com/macros/s/AKfycbxCL2JrtWNgew4XEChGaovJlOFzjlLrDdoRiPSIZaMSh6wIaQ33glwoTfZoZYvfjYRN/exec'),
           body: {
             'timestamp': DateTime.now().toString(),
             'name': _nameController.text,
             'status': _rsvpStatus,
             'food': _getFoodSelection(),
+            'hasKids': _hasKids.toString(),
+            'kidsCount': _hasKids ? _kidsController.text : '0',
           },
         );
 
@@ -105,9 +109,11 @@ class _RSVPPageState extends State<RSVPPage> {
 
           // Clear the form
           _nameController.clear();
+          _kidsController.clear();
           setState(() {
             _chickenSelected = false;
             _steakSelected = false;
+            _hasKids = false;
             _rsvpStatus = 'Accept';
           });
         } else {
@@ -222,6 +228,8 @@ class _RSVPPageState extends State<RSVPPage> {
                             if (value == 'Regret') {
                               _chickenSelected = false;
                               _steakSelected = false;
+                              _hasKids = false;
+                              _kidsController.clear();
                             }
                           });
                         },
@@ -265,6 +273,52 @@ class _RSVPPageState extends State<RSVPPage> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 32),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: _hasKids,
+                          onChanged: _isSubmitting ? null : (bool? value) {
+                            setState(() {
+                              _hasKids = value ?? false;
+                              if (!_hasKids) {
+                                _kidsController.clear();
+                              }
+                            });
+                          },
+                        ),
+                        const Text('Tell me if you have kids over 3 years old:'),
+                        if (_hasKids) ...[
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _kidsController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(vertical: 8),
+                              ),
+                              style: const TextStyle(fontSize: 16),
+                              validator: (value) {
+                                if (_hasKids && (value == null || value.isEmpty)) {
+                                  return 'Please enter the number of kids';
+                                }
+                                if (_hasKids && value != null && value.isNotEmpty) {
+                                  final number = int.tryParse(value);
+                                  if (number == null || number < 0) {
+                                    return 'Please enter a valid number';
+                                  }
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ],
                   const SizedBox(height: 32),
                   ElevatedButton(
@@ -293,6 +347,7 @@ class _RSVPPageState extends State<RSVPPage> {
   @override
   void dispose() {
     _nameController.dispose();
+    _kidsController.dispose();
     super.dispose();
   }
 }
