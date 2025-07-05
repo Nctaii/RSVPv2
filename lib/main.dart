@@ -174,7 +174,7 @@ class _RSVPPageState extends State<RSVPPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'by August 1st, twenty twenty five',
+                    'by August 15th, twenty twenty five',
                     style: GoogleFonts.pinyonScript(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
