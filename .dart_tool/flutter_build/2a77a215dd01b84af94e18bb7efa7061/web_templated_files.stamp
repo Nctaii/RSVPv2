@@ -1,0 +1,1 @@
+{"inputs":["C:\\dev\\RSVPv2\\web\\*\\index.html","C:\\dev\\RSVPv2\\web\\flutter_bootstrap.js","C:\\dev\\flutter\\bin\\cache\\engine.stamp"],"outputs":["C:\\dev\\RSVPv2\\build\\web\\*\\index.html","C:\\dev\\RSVPv2\\build\\web\\flutter_bootstrap.js"],"buildKey":"[{\"compileTarget\":\"dart2js\",\"renderer\":\"canvaskit\",\"mainJsPath\":\"main.dart.js\"}]"}
